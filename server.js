@@ -30,6 +30,10 @@ app.get('/[0-9]+', function(req, res) {
 		}));
 	}
 	mongoClient.connect(process.env.MONGO_URI || mongoDevUri, function(err, db) {
+		if (err) {
+			throw err;
+		}
+		
 		db.collection('urls').find({
 			public_id: { $eq: +publicId }
 		}, {
@@ -54,6 +58,10 @@ app.get(/new\/(https?:\/\/.*)/, function(req, res) {
 	};
 	
 	mongoClient.connect(process.env.MONGO_URI || mongoDevUri, function(err, db) {
+		if (err) {
+			throw err;
+		}
+		
 		var urlCollection = db.collection('urls');
 		urlCollection.count({}, function(err, count) {
 			if (err) {
