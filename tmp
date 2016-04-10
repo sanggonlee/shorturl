@@ -1,0 +1,33 @@
+mongodb://sanggon:okokok@ds019950.mlab.com:19950/heroku_4zgx0crb
+
+mongodb://localhost:27017/clementinejs
+
+
+
+
+
+https://sanggone-shorturl.herokuapp.com/
+
+https://shorturl-sanggonlee.c9users.io
+
+
+
+
+
+
+//var mongodb = require('mongodb');
+//var mongoClient = mongodb.MongoClient;
+var mongoDevUri = 'mongodb://localhost:27017/clementinejs';
+
+var app = express();
+require('dotenv').load();
+require('./app/config/passport')(passport);
+
+mongoose.connect(/*process.env.MONGO_URI || */mongoDevUri);
+/*
+mongodb.MongoClient.connect(process.env.MONGO_URI, function (err, db) {
+	if (err) {
+		throw err;
+	}
+	
+});*/
