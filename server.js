@@ -2,16 +2,14 @@
 
 var express = require('express');
 var routes = require('./app/routes/index.js');
-var mongoose = require('mongoose');
-var passport = require('passport');
+//var mongoose = require('mongoose');
 var session = require('express-session');
 
 var app = express();
 require('dotenv').load();
-require('./app/config/passport')(passport);
 
 var mongoDevUri = 'mongodb://localhost:27017/clementinejs';
-mongoose.connect(process.env.MONGO_URI || mongoDevUri);
+//mongoose.connect(process.env.MONGO_URI || mongoDevUri);
 
 app.use('/controllers', express.static(process.cwd() + '/app/controllers'));
 app.use('/public', express.static(process.cwd() + '/public'));
@@ -23,10 +21,7 @@ app.use(session({
 	saveUninitialized: true
 }));
 
-app.use(passport.initialize());
-app.use(passport.session());
-
-routes(app, passport);
+routes(app);
 
 var port = process.env.PORT || 8080;
 app.listen(port,  function () {
