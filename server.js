@@ -20,10 +20,8 @@ app.use(session({
 
 routes(app);
 
-app.get('/[0-9]+', function(req, res) {
-	console.log(req);	// testing for the crash that only occurs in prod
-	console.log(req.url);
-	var publicId = req.url.substr(1);
+app.get(/([0-9]+)/, function(req, res) {
+	var publicId = req.params[0];
 	if (isNaN(publicId)) {
 		return res.end(JSON.stringify({
 			"error": "Invalid short URL given."
