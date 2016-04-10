@@ -21,6 +21,7 @@ app.use(session({
 routes(app);
 
 app.get('/[0-9]+', function(req, res) {
+	console.log(req);	// testing for the crash that only occurs in prod
 	var publicId = req.url.substr(1);
 	if (isNaN(publicId)) {
 		return res.end(JSON.stringify({
