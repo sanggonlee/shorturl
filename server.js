@@ -2,7 +2,6 @@
 
 var express = require('express');
 var routes = require('./app/routes/index.js');
-//var mongoose = require('mongoose');
 var session = require('express-session');
 var mongoClient = require('mongodb').MongoClient;
 
@@ -10,7 +9,6 @@ var app = express();
 require('dotenv').load();
 
 var mongoDevUri = 'mongodb://localhost:27017/clementinejs';
-//mongoose.connect(process.env.MONGO_URI || mongoDevUri);
 
 app.use('/controllers', express.static(process.cwd() + '/app/controllers'));
 app.use('/public', express.static(process.cwd() + '/public'));
@@ -24,24 +22,65 @@ app.use(session({
 
 routes(app);
 
-app.get('/new/:url', function(req, res) {
-	var inputUrl = req.params.url;
-	var obj = {
-		"original_url": inputUrl
-	};
-	console.log("in: "+JSON.stringify(obj));
-	
+app.get('/[0-9]+', function(req, res) {
+	var publicId = req.url.substr(1);
+	if (isNaN(publicId)) {
+		return res.end(JSON.stringify({
+			"error": "Invalid short URL given."
+		}));
+	}
 	mongoClient.connect(process.env.MONGO_URI || mongoDevUri, function(err, db) {
-		db.collection('urls').insert(obj, function(err, data) {
-			if(err) {
-				throw err;
+		db.collection('urls').find({
+			public_id: { $eq: +publicId }
+		}, {
+			_id: false,
+			original_url: true,
+		}).toArray(function(err, docs) {
+			if (err) {
+				return res.end(JSON.stringify({
+					"error": "Could not find the url."
+				}));
 			}
-			console.log(JSON.stringify(data));
-			obj.short_url = process.env.APP_URL + data.insertedCount;
+			db.close();
+			res.redirect(docs[0].original_url);
+			return res.end();
 		});
 	});
-	return res.end(JSON.stringify(obj));
 });
+
+app.get(/new\/(https?:\/\/.*)/, function(req, res) {
+	var obj = {
+		"original_url": req.params[0]
+	};
+	
+	mongoClient.connect(process.env.MONGO_URI || mongoDevUri, function(err, db) {
+		var urlCollection = db.collection('urls');
+		urlCollection.count({}, function(err, count) {
+			if (err) {
+				throw err;
+			}
+			obj['short_url'] = process.env.APP_URL + count;
+			obj['public_id'] = count;
+			
+			urlCollection.insert(obj, function(err, data) {
+				if(err) {
+					throw err;
+				}
+				db.close();
+				delete obj['_id'];
+				delete obj['public_id'];
+				return res.end(JSON.stringify(obj));
+			});
+		});
+	});
+});
+
+// Reject invalid url
+app.get('/new/:token', function(req, res) {
+	return res.end(JSON.stringify({
+		"error": "Invalid url: " + req.params.token
+	}));
+})
 
 var port = process.env.PORT || 8080;
 app.listen(port,  function () {
