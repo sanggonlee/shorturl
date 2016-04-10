@@ -19,16 +19,34 @@
 	
 		<ul>
 			<li>
-				lorem ipsum
+				Pass a URL with preceeding /new/. If the URL is valid, a JSON object containing the shortened URL is returned.
 			</li>
 			<br />
 			<li>
-				lorem ipsum
+				Visit the shortened URL to be redirected to the original URL
 			</li>
-			<br />
-			<li>
-				lorem ipsum
-			</li>
+		</div>
+		
+		<div>
+			<h2>
+				Example insert usage:
+			</h2>
+			<p>
+				<code>https://sanggone-shorturl.herokuapp.com/new/http://www.google.ca</code>
+				<br />
+				<code>https://sanggone-shorturl.herokuapp.com/new/https://www.amazon.ca</code>
+			</p>
+		</div>
+		
+		<div>
+			<h2>
+				Example insert output:
+			</h2>
+			<p>
+				<code>{"original_url":"http://www.google.ca","short_url":"https://sanggone-shorturl.herokuapp.com/5"}</code>
+				<br />
+				<code>{"original_url":"https://www.amazon.ca","short_url":"https://sanggone-shorturl.herokuapp.com/3"}</code>
+			</p>
 		</div>
 		
 		<div>
@@ -36,18 +54,16 @@
 				Example usage:
 			</h2>
 			<p>
-				<code>https://sanggone-shorturl.herokuapp.com/</code>
-				<br />
-				<code>https://sanggone-shorturl.herokuapp.com/</code>
+				<code>https://sanggone-shorturl.herokuapp.com/3</code>
 			</p>
 		</div>
 		
 		<div>
 			<h2>
-				Example output:
+				Redirected to:
 			</h2>
 			<p>
-				<code>{}</code>
+				<code>https://www.amazon.ca</code>
 			</p>
 		</div>
 		
