@@ -8,8 +8,6 @@ var mongoClient = require('mongodb').MongoClient;
 var app = express();
 require('dotenv').load();
 
-var mongoDevUri = 'mongodb://localhost:27017/clementinejs';
-
 app.use('/controllers', express.static(process.cwd() + '/app/controllers'));
 app.use('/public', express.static(process.cwd() + '/public'));
 app.use('/common', express.static(process.cwd() + '/app/common'));
@@ -29,7 +27,7 @@ app.get('/[0-9]+', function(req, res) {
 			"error": "Invalid short URL given."
 		}));
 	}
-	mongoClient.connect(process.env.MONGO_URI || mongoDevUri, function(err, db) {
+	mongoClient.connect(process.env.MONGO_URI, function(err, db) {
 		if (err) {
 			throw err;
 		}
@@ -57,7 +55,7 @@ app.get(/new\/(https?:\/\/.*)/, function(req, res) {
 		"original_url": req.params[0]
 	};
 	
-	mongoClient.connect(process.env.MONGO_URI || mongoDevUri, function(err, db) {
+	mongoClient.connect(process.env.MONGO_URI, function(err, db) {
 		if (err) {
 			throw err;
 		}
